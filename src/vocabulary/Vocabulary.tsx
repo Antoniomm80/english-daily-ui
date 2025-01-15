@@ -9,7 +9,8 @@ function Vocabulary() {
     const {
         isLoading,
         data,
-        refetch
+        refetch,
+        isFetching
     } = useQuery(["daily-vocabulary"], () => vocabularyService.getDailyVocabulary());
 
     function printArray(array: string[] | undefined) {
@@ -20,7 +21,7 @@ function Vocabulary() {
     }
 
 
-    if (isLoading) {
+    if (isLoading || isFetching) {
         return (
             <div className="path-list">
                 <Spinner>
