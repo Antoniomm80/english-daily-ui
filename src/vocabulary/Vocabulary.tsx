@@ -34,7 +34,8 @@ function Vocabulary() {
         <Card className="bg-zinc-100">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">Here's your daily random vocabulary refresher</CardTitle>
-                <CardDescription>Card Description</CardDescription>
+                <CardDescription className="text-lg font-gray-900"><strong className="font-bold">From: </strong><span
+                    className="text-gray-500">{data?.source}</span></CardDescription>
             </CardHeader>
             <CardContent>
                 <ul className="list-none text-left">

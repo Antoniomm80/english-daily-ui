@@ -1,4 +1,5 @@
 export interface VocabularyProps {
+    source: string
     word: string;
     definition: string;
     partOfSpeech: string;
