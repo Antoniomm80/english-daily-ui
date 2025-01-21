@@ -1,13 +1,16 @@
 import axios, {AxiosError} from "axios";
 import {VocabularyProps} from "@/vocabulary/VocabularyProps.ts";
+import qs from "qs";
 
 const vocabularyService = {
 
 
-    async getDailyVocabulary(): Promise<VocabularyProps> {
+    async getDailyVocabulary(blacklist: string[]): Promise<VocabularyProps> {
         try {
-            //add param to url
-            const result = await axios.get<VocabularyProps>(`/english-daily/api/v1/englishdaily/vocabulary`);
+            const result = await axios.get<VocabularyProps>(`/english-daily/api/v1/englishdaily/vocabulary`, {
+                params: {blacklist},
+                paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
+            });
             return result.data;
         } catch (error) {
             const errors = error as Error | AxiosError;

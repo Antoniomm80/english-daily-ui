@@ -5,13 +5,15 @@ import {Button} from "@/components/ui/button.tsx";
 import {Spinner} from "@/components/ui/spinner.tsx";
 
 
+const blacklist: string[] = [];
+
 function Vocabulary() {
     const {
         isLoading,
         data,
         refetch,
         isFetching
-    } = useQuery(["daily-vocabulary"], () => vocabularyService.getDailyVocabulary());
+    } = useQuery(["daily-vocabulary"], () => vocabularyService.getDailyVocabulary(blacklist));
 
     function printArray(array: string[] | undefined) {
         if (!array) {
@@ -29,6 +31,9 @@ function Vocabulary() {
                 </Spinner>
             </div>
         );
+    }
+    if (data?.word && !blacklist.includes(data.word)) {
+        blacklist.push(data.word);
     }
     return <div className="flex flex-1 flex-col gap-4 p-4">
         <Card className="bg-zinc-100">
