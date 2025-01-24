@@ -35,7 +35,7 @@ function Vocabulary() {
     if (data?.word && !blacklist.includes(data.word)) {
         blacklist.push(data.word);
     }
-    return <div className="flex flex-1 flex-col gap-4 p-4">
+    return <div className="p-4">
         <Card className="bg-zinc-100">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">Here's your daily random vocabulary refresher</CardTitle>

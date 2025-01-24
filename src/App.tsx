@@ -5,6 +5,8 @@ import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sid
 import {AppSidebar} from "@/components/app-sidebar.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator} from "@/components/ui/breadcrumb.tsx";
+import {Route, Routes} from "react-router";
+import AskLlama from "@/askllama/AskLlama.tsx";
 
 const queryClient = new QueryClient()
 
@@ -36,7 +38,10 @@ function App() {
                                 </Breadcrumb>
                             </div>
                         </header>
-                        <Vocabulary/>
+                        <Routes>
+                            <Route index element={<Vocabulary/>}/>
+                            <Route path="/ask-llama" element={<AskLlama/>}/>
+                        </Routes>
                     </SidebarInset>
                 </SidebarProvider>
 

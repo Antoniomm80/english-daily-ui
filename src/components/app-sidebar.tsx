@@ -1,5 +1,5 @@
 import * as React from "react"
-import {BookOpen, Bot, Settings2, SquareTerminal,} from "lucide-react"
+import {BookOpen, Bot, SquareTerminal,} from "lucide-react"
 
 import {NavMain} from "@/components/nav-main"
 import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} from "@/components/ui/sidebar"
@@ -54,7 +54,7 @@ const data = {
             items: [
                 {
                     title: "Daily Random Item",
-                    url: "#",
+                    url: "/",
                 },
                 {
                     title: "Get Started",
@@ -71,27 +71,9 @@ const data = {
             ],
         },
         {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "#",
-                },
-                {
-                    title: "Team",
-                    url: "#",
-                },
-                {
-                    title: "Billing",
-                    url: "#",
-                },
-                {
-                    title: "Limits",
-                    url: "#",
-                },
-            ],
+            title: "Ask Llama",
+            url: "/ask-llama",
+            icon: Bot
         },
     ],
 
