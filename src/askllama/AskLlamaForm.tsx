@@ -4,10 +4,14 @@ import {z} from "zod"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormField, FormItem, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {useEffect, useState} from "react";
-import {io} from "socket.io-client";
+import {useState} from "react";
+import {useSocketIo} from "@/hooks/use-socket-io.tsx";
 
 function AskLlamaForm() {
+    const [messages, setMessages] = useState<string[]>([]);
+    useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
+        setMessages((prev) => [...prev, message]);
+    });
 
     const FormSchema = z.object({
         question: z.string().min(10, {
@@ -34,25 +38,6 @@ function AskLlamaForm() {
             body: JSON.stringify(data),
         })
     }
-
-    const [messages, setMessages] = useState<string[]>([]);
-
-
-    useEffect(() => {
-        const newSocket = io({
-            host: "controlplane.local",
-            path: "/ask-llama/socket"
-        });
-
-
-        newSocket.on("message", (message: string) => {
-            setMessages((prev) => [...prev, message]);
-        });
-
-        return () => {
-            newSocket.disconnect();
-        };
-    }, []);
 
 
     return (
