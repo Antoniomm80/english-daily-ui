@@ -4,7 +4,6 @@ import {BookOpen, Bot, SquareTerminal,} from "lucide-react"
 import {NavMain} from "@/components/nav-main"
 import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} from "@/components/ui/sidebar"
 
-// This is sample data.
 const data = {
 
     navMain: [
@@ -13,39 +12,13 @@ const data = {
             url: "#",
             icon: SquareTerminal,
             isActive: true,
-            items: [
-                {
-                    title: "History",
-                    url: "#",
-                },
-                {
-                    title: "Starred",
-                    url: "#",
-                },
-                {
-                    title: "Settings",
-                    url: "#",
-                },
-            ],
+            items: [],
         },
         {
             title: "Grammar - C1",
             url: "#",
             icon: Bot,
-            items: [
-                {
-                    title: "Genesis",
-                    url: "#",
-                },
-                {
-                    title: "Explorer",
-                    url: "#",
-                },
-                {
-                    title: "Quantum",
-                    url: "#",
-                },
-            ],
+            items: [],
         },
         {
             title: "Vocabulary",
@@ -55,18 +28,6 @@ const data = {
                 {
                     title: "Daily Random Item",
                     url: "/",
-                },
-                {
-                    title: "Get Started",
-                    url: "#",
-                },
-                {
-                    title: "Tutorials",
-                    url: "#",
-                },
-                {
-                    title: "Changelog",
-                    url: "#",
                 },
             ],
         },

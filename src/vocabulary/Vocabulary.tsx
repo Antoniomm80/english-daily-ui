@@ -3,11 +3,19 @@ import vocabularyService from "@/vocabulary/VocabularyService.ts";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Spinner} from "@/components/ui/spinner.tsx";
+import {useBreadcrumb} from "@/breadcrumb/BreadcrumbContext.tsx";
+import {useEffect} from "react";
 
 
 const blacklist: string[] = [];
 
 function Vocabulary() {
+    const {setBreadcrumbs} = useBreadcrumb();
+
+    useEffect(() => {
+        const breadcrumbs = ["English Daily", "Vocabulary"];
+        setBreadcrumbs(breadcrumbs);
+    }, [setBreadcrumbs]);
     const {
         isLoading,
         data,
