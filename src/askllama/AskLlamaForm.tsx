@@ -4,47 +4,83 @@ import {z} from "zod"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormField, FormItem, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
+import {useEffect, useState} from "react";
+import {io} from "socket.io-client";
 
 function AskLlamaForm() {
 
     const FormSchema = z.object({
-        prompt: z.string().min(10, {
-            message: "The prompt must be at least 10 characters long",
+        question: z.string().min(10, {
+            message: "The question must be at least 10 characters long",
         }),
     })
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            prompt: "",
+            question: "",
         },
     })
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(JSON.stringify(data, null, 2));
+        setMessages([]);
+        //POST request to the llama
+
+        fetch("/english-daily/api/v1/englishdaily/ask-llama", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
     }
 
-    return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-                <FormField
-                    control={form.control}
-                    name="prompt"
-                    render={({field}) => (
-                        <FormItem>
-                            <FormControl>
-                                <Input placeholder="Send a message to the llama" {...field} />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-                <div className="flex flex-row justify-end">
-                    <Button type="submit">Ask</Button>
-                </div>
+    const [messages, setMessages] = useState<string[]>([]);
 
-            </form>
-        </Form>
+
+    useEffect(() => {
+        const newSocket = io({
+            host: "controlplane.local",
+            path: "/ask-llama/socket"
+        });
+
+
+        newSocket.on("message", (message: string) => {
+            setMessages((prev) => [...prev, message]);
+        });
+
+        return () => {
+            newSocket.disconnect();
+        };
+    }, []);
+
+
+    return (
+        <>
+            <div className="overflow-y-auto h-64 border p-2 rounded bg-gray-50 mb-4">
+                {messages.join("")}
+            </div>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="question"
+                        render={({field}) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input placeholder="Send a message to the llama" {...field} />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                    <div className="flex flex-row justify-end">
+                        <Button type="submit">Ask</Button>
+                    </div>
+
+                </form>
+            </Form>
+        </>
     )
 
 

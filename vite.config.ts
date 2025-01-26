@@ -17,6 +17,16 @@ export default defineConfig({
                 target: 'http://controlplane.local',
                 changeOrigin: true,
             },
+            '/english-daily-ws': {
+                target: 'http://controlplane.local',
+                changeOrigin: true,
+                ws: true,
+            },
+            '/ask-llama': {
+                target: 'http://controlplane.local',
+                changeOrigin: true,
+                ws: true,
+            },
         },
     }
 })
