@@ -27,6 +27,11 @@ export default defineConfig({
                 changeOrigin: true,
                 ws: true,
             },
+            '/ask-llama/socket': {
+                target: 'http://controlplane.local',
+                changeOrigin: true,
+                ws: true,
+            },
         },
     }
 })
