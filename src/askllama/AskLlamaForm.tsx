@@ -3,10 +3,10 @@ import {useForm} from "react-hook-form"
 import {z} from "zod"
 import {Form, FormControl, FormField, FormItem, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useSocketIo} from "@/hooks/use-socket-io.tsx";
 import {Send} from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import LlmResponsePanel from "@/llmResponse/LlmResponsePanel.tsx";
 
 function AskLlamaForm() {
 
@@ -14,18 +14,7 @@ function AskLlamaForm() {
     const reasoningEndedRef = useRef(false);
     const [thoughtChain, setThoughtChain] = useState<string[]>([]);
     const [response, setResponse] = useState<string[]>([]);
-    const thoughtChainRef = useRef<HTMLDivElement | null>(null);
-    const responseChainRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => {
-        if (thoughtChainRef.current) {
-            thoughtChainRef.current.scrollTop = thoughtChainRef.current.scrollHeight;
-        }
-    }, [thoughtChain]);
-    useEffect(() => {
-        if (responseChainRef.current) {
-            responseChainRef.current.scrollTop = responseChainRef.current.scrollHeight;
-        }
-    }, [response]);
+
     useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
 
         if (message.trim().includes("</think>")) {
@@ -71,12 +60,8 @@ function AskLlamaForm() {
 
     return (
         <>
-            <div ref={thoughtChainRef} className="overflow-y-auto h-64 border p-2 rounded bg-gray-50 mb-4">
-                <ReactMarkdown>{thoughtChain.join("")}</ReactMarkdown>
-            </div>
-            <div ref={responseChainRef} className="overflow-y-auto h-64 border p-2 rounded bg-gray-50 mb-4">
-                <ReactMarkdown>{response.join("")}</ReactMarkdown>
-            </div>
+            <LlmResponsePanel text={thoughtChain}/>
+            <LlmResponsePanel text={response}/>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6" onKeyDown={(e) => {
                     if (e.key === "Enter") {
