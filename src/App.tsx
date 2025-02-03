@@ -8,6 +8,7 @@ import {Route, Routes} from "react-router";
 import AskLlama from "@/askllama/AskLlama.tsx";
 import BreadcrumbDisplay from "@/breadcrumb/BreadcrumbDisplay.tsx";
 import {BreadcrumbProvider} from "@/breadcrumb/BreadcrumbContext.tsx";
+import GrammarLesson from "@/grammar/GrammarLesson.tsx";
 
 const queryClient = new QueryClient()
 
@@ -31,6 +32,7 @@ function App() {
                             <Routes>
                                 <Route index element={<Vocabulary/>}/>
                                 <Route path="/ask-llama" element={<AskLlama/>}/>
+                                <Route path="/grammar/:grammar-lesson" element={<GrammarLesson/>}/>
                             </Routes>
                         </SidebarInset>
                     </SidebarProvider>
