@@ -17,6 +17,11 @@ function BreadcrumbDisplay() {
                 <BreadcrumbItem>
                     <BreadcrumbPage>{breadcrumbs[1]}</BreadcrumbPage>
                 </BreadcrumbItem>
+                {breadcrumbs[2] && <> <BreadcrumbSeparator className="hidden md:block"/>
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>{breadcrumbs[2]}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </>}
             </BreadcrumbList>
         </Breadcrumb>
     );

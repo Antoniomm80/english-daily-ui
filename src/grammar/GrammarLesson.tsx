@@ -3,19 +3,29 @@ import {useEffect, useRef, useState} from "react";
 import {useBreadcrumb} from "@/breadcrumb/BreadcrumbContext.tsx";
 import LlmResponsePanel from "@/llmResponse/LlmResponsePanel.tsx";
 import {useSocketIo} from "@/hooks/use-socket-io.tsx";
+import {useGrammarLessons} from "@/hooks/use-grammar-lessons.tsx";
 
 function GrammarLesson() {
-    const {setBreadcrumbs} = useBreadcrumb();
-    const {"grammar-lesson": grammarLesson} = useParams();
-
-    useEffect(() => {
-        const breadcrumbs = ["English Daily", "Grammar", grammarLesson!];
-        setBreadcrumbs(breadcrumbs);
-    }, [setBreadcrumbs]);
-
     const reasoningEndedRef = useRef(false);
     const [thoughtChain, setThoughtChain] = useState<string[]>([]);
     const [response, setResponse] = useState<string[]>([]);
+    const {setBreadcrumbs} = useBreadcrumb();
+    const {"grammar-lesson": grammarLesson} = useParams();
+    const grammarLessons = useGrammarLessons();
+    const currentLesson = grammarLessons?.lessons.find((lesson) => lesson.title === grammarLesson);
+
+    useEffect(() => {
+        const breadcrumbs = ["English Daily", "Grammar", currentLesson?.description];
+        setBreadcrumbs(breadcrumbs);
+    }, [setBreadcrumbs, grammarLesson]);
+
+    useEffect(() => {
+        setResponse([]);
+        setThoughtChain([]);
+        reasoningEndedRef.current = false;
+        fetch(`/english-daily/api/v1/englishdaily/grammar?grammarLesson=${grammarLesson}`);
+    }, [grammarLesson]);
+
 
     useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
 
@@ -30,8 +40,6 @@ function GrammarLesson() {
         }
 
     });
-
-    fetch(`/english-daily/api/v1/englishdaily/grammar?grammarLesson=${grammarLesson}`);
 
 
     return (
