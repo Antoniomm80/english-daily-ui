@@ -4,6 +4,7 @@ import {useBreadcrumb} from "@/breadcrumb/BreadcrumbContext.tsx";
 import LlmResponsePanel from "@/llmResponse/LlmResponsePanel.tsx";
 import {useSocketIo} from "@/hooks/use-socket-io.tsx";
 import {useGrammarLessons} from "@/hooks/use-grammar-lessons.tsx";
+import {ThoughtChainSwitcher} from "@/llmResponse/ThoughtChainSwitcher.tsx";
 
 function GrammarLesson() {
     const reasoningEndedRef = useRef(false);
@@ -13,6 +14,7 @@ function GrammarLesson() {
     const {"grammar-lesson": grammarLesson} = useParams();
     const grammarLessons = useGrammarLessons();
     const currentLesson = grammarLessons?.lessons.find((lesson) => lesson.title === grammarLesson);
+    const [thoughtChainVisible, setThoughtChainVisible] = useState(false);
 
     useEffect(() => {
         const breadcrumbs = ["English Daily", "Grammar", currentLesson?.description ?? ""];
@@ -43,10 +45,14 @@ function GrammarLesson() {
 
 
     return (
-        <div className="p-4">
-            <LlmResponsePanel text={thoughtChain}/>
-            <LlmResponsePanel text={response}/>
-        </div>
+        <>
+            <div className="p-4">
+                <ThoughtChainSwitcher thoughtChainVisible={thoughtChainVisible}
+                                      setThoughtChainVisible={(checked) => setThoughtChainVisible(checked)}/>
+                {thoughtChainVisible && <LlmResponsePanel text={thoughtChain} greyBackground/>}
+                <LlmResponsePanel text={response}/>
+            </div>
+        </>
     );
 
 }

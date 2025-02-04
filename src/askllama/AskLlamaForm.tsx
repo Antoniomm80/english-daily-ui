@@ -8,12 +8,17 @@ import {useSocketIo} from "@/hooks/use-socket-io.tsx";
 import {Send} from "lucide-react";
 import LlmResponsePanel from "@/llmResponse/LlmResponsePanel.tsx";
 
-function AskLlamaForm() {
+interface AskLlamaFormProps {
+    thoughtChainVisible: boolean;
+}
+
+function AskLlamaForm(props: AskLlamaFormProps) {
 
 
     const reasoningEndedRef = useRef(false);
     const [thoughtChain, setThoughtChain] = useState<string[]>([]);
     const [response, setResponse] = useState<string[]>([]);
+
 
     useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
 
@@ -60,7 +65,7 @@ function AskLlamaForm() {
 
     return (
         <>
-            <LlmResponsePanel text={thoughtChain}/>
+            {props.thoughtChainVisible && <LlmResponsePanel text={thoughtChain} greyBackground/>}
             <LlmResponsePanel text={response}/>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6" onKeyDown={(e) => {
