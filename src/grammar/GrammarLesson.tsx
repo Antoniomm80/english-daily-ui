@@ -15,7 +15,7 @@ function GrammarLesson() {
     const currentLesson = grammarLessons?.lessons.find((lesson) => lesson.title === grammarLesson);
 
     useEffect(() => {
-        const breadcrumbs = ["English Daily", "Grammar", currentLesson?.description];
+        const breadcrumbs = ["English Daily", "Grammar", currentLesson?.description ?? ""];
         setBreadcrumbs(breadcrumbs);
     }, [setBreadcrumbs, grammarLesson]);
 
