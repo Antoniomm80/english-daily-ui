@@ -7,28 +7,33 @@ import {useRef, useState} from "react";
 import {useSocketIo} from "@/hooks/use-socket-io.tsx";
 import {Send} from "lucide-react";
 import LlmResponsePanel from "@/llmResponse/LlmResponsePanel.tsx";
+import {Message} from "@/llmResponse/Message.ts";
+import {ChatArea} from "@/llmResponse/ChatArea.tsx";
 
 interface AskLlamaFormProps {
     thoughtChainVisible: boolean;
 }
 
+
 function AskLlamaForm(props: AskLlamaFormProps) {
-
-
     const reasoningEndedRef = useRef(false);
     const [thoughtChain, setThoughtChain] = useState<string[]>([]);
-    const [response, setResponse] = useState<string[]>([]);
-
-
+    const [chatMessages, setChatMessages] = useState<Message[]>([]);
     useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
-
+        if (message.trim().includes("<think>")) {
+            return;
+        }
         if (message.trim().includes("</think>")) {
             reasoningEndedRef.current = true;
         } else {
             if (!reasoningEndedRef.current) {
                 setThoughtChain((prev) => [...prev, message]);
             } else {
-                setResponse((prev) => [...prev, message]);
+                setChatMessages((prev) => {
+                    const newMessages = [...prev];
+                    newMessages[newMessages.length - 1].content.push(message);
+                    return newMessages;
+                });
             }
         }
 
@@ -50,9 +55,7 @@ function AskLlamaForm(props: AskLlamaFormProps) {
     function onSubmit(data: z.infer<typeof FormSchema>) {
         reasoningEndedRef.current = false;
         setThoughtChain([]);
-        setResponse([]);
-        //POST request to the llama
-
+        setChatMessages([...chatMessages, {role: "user", content: [data.question]}, {role: "bot", content: []}]);
         fetch("/english-daily/api/v1/englishdaily/ask-llama", {
             method: "POST",
             headers: {
@@ -66,7 +69,8 @@ function AskLlamaForm(props: AskLlamaFormProps) {
     return (
         <>
             {props.thoughtChainVisible && <LlmResponsePanel text={thoughtChain} greyBackground/>}
-            <LlmResponsePanel text={response}/>
+            <ChatArea messages={chatMessages}/>
+
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6" onKeyDown={(e) => {
                     if (e.key === "Enter") {
