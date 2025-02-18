@@ -13,7 +13,8 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import {Link} from "react-router";
+import {Link, useLocation} from "react-router";
+
 
 export function NavMain({
                             items,
@@ -29,6 +30,12 @@ export function NavMain({
         }[]
     }[]
 }) {
+    const location = useLocation();
+
+    function isActivePath(url: string) {
+        return location.pathname.includes(url);
+    }
+
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Topics</SidebarGroupLabel>
@@ -37,7 +44,7 @@ export function NavMain({
                     if (item.items === undefined) {
                         return (
                             <SidebarMenuSubItem key={item.title}>
-                                <SidebarMenuSubButton asChild>
+                                <SidebarMenuSubButton asChild isActive={isActivePath(item.url)}>
                                     <Link to={item.url}>
                                         {item.icon && <item.icon/>}
                                         <span>{item.title}</span>
@@ -66,7 +73,7 @@ export function NavMain({
                                         <SidebarMenuSub>
                                             {item.items?.map((subItem) => (
                                                 <SidebarMenuSubItem key={subItem.title}>
-                                                    <SidebarMenuSubButton asChild>
+                                                    <SidebarMenuSubButton asChild isActive={isActivePath(subItem.url)}>
                                                         <Link to={subItem.url}>
                                                             <span>{subItem.title}</span>
                                                         </Link>
