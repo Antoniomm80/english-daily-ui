@@ -11,7 +11,7 @@ import {ChatArea} from "@/llmResponse/ChatArea.tsx";
 function GrammarLesson() {
     const reasoningEndedRef = useRef(false);
     const [thoughtChain, setThoughtChain] = useState<string[]>([]);
-    const [response, setResponse] = useState<string[]>([]);
+
     const {setBreadcrumbs} = useBreadcrumb();
     const {"grammar-lesson": grammarLesson} = useParams();
     const grammarLessons = useGrammarLessons();
@@ -25,7 +25,6 @@ function GrammarLesson() {
     }, [setBreadcrumbs, grammarLesson]);
 
     useEffect(() => {
-        setResponse([]);
         setThoughtChain([]);
         reasoningEndedRef.current = false;
         setChatMessages([...chatMessages, {role: "user", content: [`I want to brush up on ${currentLesson?.description ?? ""}`]}, {
