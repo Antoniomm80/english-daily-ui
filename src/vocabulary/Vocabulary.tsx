@@ -22,7 +22,9 @@ function Vocabulary() {
         data,
         refetch,
         isFetching,
-    } = useQuery(["daily-vocabulary"], () => vocabularyService.getDailyVocabulary(blacklist));
+    } = useQuery(["daily-vocabulary"], () => vocabularyService.getDailyVocabulary(blacklist), {
+        refetchOnWindowFocus: false,
+    });
     const isWaitingForBackend = isLoading || isFetching;
 
     function printArray(array: string[] | undefined) {
