@@ -1,7 +1,6 @@
 name: Build and Store Artifacts
 
 on:
-  # Run this workflow on every push or pull request to the main branch.
   push:
     branches:
       - dev
@@ -23,16 +22,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # Specify the Node.js version you want to use
+          node-version: '20'
+          cache: 'yarn' # Enable caching for Yarn
 
       - name: Install dependencies
-        run: npm install --no-progress --force
+        run: yarn install --frozen-lockfile
 
-      - name: Run npm build
-        run: npm run build
+      - name: Run build
+        run: yarn build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: englishdaily-app
-          path: dist/ # Specify the build directory path
+          path: dist/
