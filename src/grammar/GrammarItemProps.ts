@@ -1,6 +1,6 @@
 export interface GrammarItemProps {
+    id: number;
     title: string;
-    description: string;
 }
 
 export interface GrammarLessonsProps {

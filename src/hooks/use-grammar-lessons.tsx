@@ -1,11 +1,12 @@
 import axios, {AxiosError} from "axios";
 import {GrammarLessonsProps} from "@/grammar/GrammarItemProps.ts";
 import {useQuery} from "react-query";
+import {GrammarLessonLevel} from "@/grammar/GrammarLessonLevel.ts";
 
 const grammarService = {
-    async getGrammarLessons(): Promise<GrammarLessonsProps> {
+    async getGrammarLessons(grammarLessonLevel: GrammarLessonLevel): Promise<GrammarLessonsProps> {
         try {
-            const result = await axios.get<GrammarLessonsProps>(`/english-daily/api/v1/englishdaily/grammar-lessons`);
+            const result = await axios.get<GrammarLessonsProps>(`/english-daily/api/v1/englishdaily/grammar-lessons/${grammarLessonLevel.valueOf()}`);
             return result.data;
         } catch (error) {
             const errors = error as Error | AxiosError;
@@ -19,8 +20,12 @@ const grammarService = {
     },
 }
 
-export function useGrammarLessons(): GrammarLessonsProps | undefined {
-    const {data, isError, error} = useQuery(["grammar-lessons"], () => grammarService.getGrammarLessons());
+export function useGrammarLessons(grammarLessonLevel: GrammarLessonLevel): GrammarLessonsProps | undefined {
+    const {
+        data,
+        isError,
+        error
+    } = useQuery(["grammar-lessons", grammarLessonLevel.valueOf()], () => grammarService.getGrammarLessons(grammarLessonLevel));
     if (isError) {
         throw error;
     }

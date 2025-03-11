@@ -7,6 +7,7 @@ import {useGrammarLessons} from "@/hooks/use-grammar-lessons.tsx";
 import {ThoughtChainSwitcher} from "@/llmResponse/ThoughtChainSwitcher.tsx";
 import {Message} from "@/llmResponse/Message.ts";
 import {ChatArea} from "@/llmResponse/ChatArea.tsx";
+import {GrammarLessonLevel} from "@/grammar/GrammarLessonLevel.ts";
 
 function GrammarLesson() {
     const reasoningEndedRef = useRef(false);
@@ -14,24 +15,32 @@ function GrammarLesson() {
 
     const {setBreadcrumbs} = useBreadcrumb();
     const {"grammar-lesson": grammarLesson} = useParams();
-    const grammarLessons = useGrammarLessons();
-    const currentLesson = grammarLessons?.lessons.find((lesson) => lesson.title === grammarLesson);
+    const b2GrammarLessons = useGrammarLessons(GrammarLessonLevel.B2);
+    const c1GrammarLessons = useGrammarLessons(GrammarLessonLevel.C1);
+    const advancedGrammarLessons = useGrammarLessons(GrammarLessonLevel.ADVANCED_GRAMMAR_CHALLENGE);
+    const allLessons = [
+        ...(b2GrammarLessons?.lessons ?? []),
+        ...(c1GrammarLessons?.lessons ?? []),
+        ...(advancedGrammarLessons?.lessons ?? [])
+    ];
+
+    const currentLesson = allLessons.find((lesson) => lesson.id === parseInt(grammarLesson!));
     const [thoughtChainVisible, setThoughtChainVisible] = useState(false);
     const [chatMessages, setChatMessages] = useState<Message[]>([]);
 
     useEffect(() => {
-        const breadcrumbs = ["English Daily", "Grammar", currentLesson?.description ?? ""];
+        const breadcrumbs = ["English Daily", "Grammar", currentLesson?.title ?? ""];
         setBreadcrumbs(breadcrumbs);
     }, [setBreadcrumbs, grammarLesson]);
 
     useEffect(() => {
         setThoughtChain([]);
         reasoningEndedRef.current = false;
-        setChatMessages([...chatMessages, {role: "user", content: [`I want to brush up on ${currentLesson?.description ?? ""}`]}, {
+        setChatMessages([...chatMessages, {role: "user", content: [`I want to brush up on ${currentLesson?.title ?? ""}`]}, {
             role: "bot",
             content: []
         }]);
-        fetch(`/english-daily/api/v1/englishdaily/grammar?grammarLesson=${grammarLesson}`);
+        fetch(`/english-daily/api/v1/englishdaily/grammar/${currentLesson?.id}`);
     }, [grammarLesson]);
 
 

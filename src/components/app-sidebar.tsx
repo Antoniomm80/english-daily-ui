@@ -4,6 +4,8 @@ import {BookMinus, BookOpen, BookPlus, GraduationCap, SquareTerminal,} from "luc
 import {NavMain} from "@/components/nav-main"
 import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} from "@/components/ui/sidebar"
 import {useGrammarLessons} from "@/hooks/use-grammar-lessons.tsx";
+import {GrammarLessonLevel} from "@/grammar/GrammarLessonLevel.ts";
+import {GrammarLessonsProps} from "@/grammar/GrammarItemProps.ts";
 
 const data = {
 
@@ -46,14 +48,22 @@ const data = {
 
 }
 
-export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
-    const grammarLessons = useGrammarLessons();
+function toMenuEntry(grammarLessons: GrammarLessonsProps | undefined) {
     if (grammarLessons) {
-        data.navMain[2].items = grammarLessons.lessons.map(lesson => ({
-            title: lesson.description,
-            url: `/grammar/${lesson.title}`
+        return grammarLessons.lessons.map(lesson => ({
+            title: lesson.title,
+            url: `/grammar/${lesson.id}`
         }));
     }
+    return [];
+
+}
+
+export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+    data.navMain[0].items = toMenuEntry(useGrammarLessons(GrammarLessonLevel.B2));
+    data.navMain[1].items = toMenuEntry(useGrammarLessons(GrammarLessonLevel.C1));
+    data.navMain[2].items = toMenuEntry(useGrammarLessons(GrammarLessonLevel.ADVANCED_GRAMMAR_CHALLENGE));
+
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
