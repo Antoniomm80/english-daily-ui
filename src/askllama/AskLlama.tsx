@@ -3,6 +3,7 @@ import AskLlamaForm from "@/askllama/AskLlamaForm.tsx";
 import {useBreadcrumb} from "@/breadcrumb/BreadcrumbContext.tsx";
 import {useEffect, useState} from "react";
 import {ThoughtChainSwitcher} from "@/llmResponse/ThoughtChainSwitcher.tsx";
+import {DEEPSEEK_ENABLED} from "@/config.ts";
 
 function AskLlama() {
     const {setBreadcrumbs} = useBreadcrumb();
@@ -14,8 +15,8 @@ function AskLlama() {
     const [thoughtChainVisible, setThoughtChainVisible] = useState(false);
     return (
         <div className="p-4">
-            <ThoughtChainSwitcher thoughtChainVisible={thoughtChainVisible}
-                                  setThoughtChainVisible={(checked) => setThoughtChainVisible(checked)}/>
+            {DEEPSEEK_ENABLED && <ThoughtChainSwitcher thoughtChainVisible={thoughtChainVisible}
+                                                       setThoughtChainVisible={(checked) => setThoughtChainVisible(checked)}/>}
             <Card className="">
                 <CardHeader>
                     <CardTitle>English Daily</CardTitle>

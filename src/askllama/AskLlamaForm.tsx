@@ -9,6 +9,7 @@ import {Send} from "lucide-react";
 import LlmResponsePanel from "@/llmResponse/LlmResponsePanel.tsx";
 import {Message} from "@/llmResponse/Message.ts";
 import {ChatArea} from "@/llmResponse/ChatArea.tsx";
+import {DEEPSEEK_ENABLED} from "@/config.ts";
 
 interface AskLlamaFormProps {
     thoughtChainVisible: boolean;
@@ -20,6 +21,13 @@ function AskLlamaForm(props: AskLlamaFormProps) {
     const [thoughtChain, setThoughtChain] = useState<string[]>([]);
     const [chatMessages, setChatMessages] = useState<Message[]>([]);
     useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
+        if (!DEEPSEEK_ENABLED) {
+            setChatMessages((prev) => {
+                const newMessages = [...prev];
+                newMessages[newMessages.length - 1].content.push(message);
+                return newMessages;
+            });
+        }
         if (message.trim().includes("<think>")) {
             return;
         }

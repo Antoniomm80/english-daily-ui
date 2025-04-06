@@ -8,6 +8,7 @@ import {ThoughtChainSwitcher} from "@/llmResponse/ThoughtChainSwitcher.tsx";
 import {Message} from "@/llmResponse/Message.ts";
 import {ChatArea} from "@/llmResponse/ChatArea.tsx";
 import {GrammarLessonLevel} from "@/grammar/GrammarLessonLevel.ts";
+import {DEEPSEEK_ENABLED} from "@/config.ts";
 
 function GrammarLesson() {
     const reasoningEndedRef = useRef(false);
@@ -45,6 +46,13 @@ function GrammarLesson() {
 
 
     useSocketIo("controlplane.local", "/ask-llama/socket", (message: string) => {
+        if (!DEEPSEEK_ENABLED) {
+            setChatMessages((prev) => {
+                const newMessages = [...prev];
+                newMessages[newMessages.length - 1].content.push(message);
+                return newMessages;
+            });
+        }
         if (message.trim().includes("<think>")) {
             return;
         }
@@ -68,8 +76,8 @@ function GrammarLesson() {
     return (
         <>
             <div className="p-4">
-                <ThoughtChainSwitcher thoughtChainVisible={thoughtChainVisible}
-                                      setThoughtChainVisible={(checked) => setThoughtChainVisible(checked)}/>
+                {DEEPSEEK_ENABLED && <ThoughtChainSwitcher thoughtChainVisible={thoughtChainVisible}
+                                                           setThoughtChainVisible={(checked) => setThoughtChainVisible(checked)}/>}
                 {thoughtChainVisible && <LlmResponsePanel text={thoughtChain} greyBackground/>}
                 <ChatArea messages={chatMessages}/>
             </div>
