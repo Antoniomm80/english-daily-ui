@@ -1,45 +1,49 @@
-import './App.css'
 import {QueryClient, QueryClientProvider} from "react-query";
-import Vocabulary from "@/vocabulary/Vocabulary.tsx";
-import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar.tsx";
-import {AppSidebar} from "@/components/app-sidebar.tsx";
-import {Separator} from "@/components/ui/separator.tsx";
-import {Route, Routes} from "react-router";
-import AskLlama from "@/askllama/AskLlama.tsx";
-import BreadcrumbDisplay from "@/breadcrumb/BreadcrumbDisplay.tsx";
-import {BreadcrumbProvider} from "@/breadcrumb/BreadcrumbContext.tsx";
-import GrammarLesson from "@/grammar/GrammarLesson.tsx";
+import {Navigate, Route, Routes} from "react-router";
+import {TooltipProvider} from "@/components/ui/tooltip.tsx";
+import {SocketProvider} from "@/hooks/use-socket-io.tsx";
+import {AppShell} from "@/components/layout/AppShell.tsx";
+import {CommandMenuProvider} from "@/components/layout/CommandMenu.tsx";
+import TodayPage from "@/pages/TodayPage.tsx";
+import GrammarLibraryPage from "@/pages/GrammarLibraryPage.tsx";
+import LessonPage from "@/pages/LessonPage.tsx";
+import WordsPage from "@/pages/WordsPage.tsx";
+import AskPage from "@/pages/AskPage.tsx";
+import {CourseAdminPage} from "@/components/admin/CourseAdminPage";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
+
+function AdminPage() {
+    return (
+        <div className="flex-1 overflow-y-auto">
+            <CourseAdminPage/>
+        </div>
+    );
+}
 
 function App() {
     return (
-        <>
-            <QueryClientProvider client={queryClient}>
-                <BreadcrumbProvider>
-                    <SidebarProvider>
-                        <AppSidebar/>
-                        <SidebarInset>
-                            <header
-                                className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                                <div className="flex items-center gap-2 px-4">
-                                    <SidebarTrigger className="-ml-1"/>
-                                    <Separator orientation="vertical" className="mr-2 h-4"/>
-                                    <div id="breadcrumb-root"></div>
-                                    <BreadcrumbDisplay/>
-                                </div>
-                            </header>
+        <QueryClientProvider client={queryClient}>
+            <SocketProvider>
+                <TooltipProvider delayDuration={300}>
+                    <CommandMenuProvider>
+                        <AppShell>
                             <Routes>
-                                <Route index element={<Vocabulary/>}/>
-                                <Route path="/ask-llama" element={<AskLlama/>}/>
-                                <Route path="/grammar/:grammar-lesson" element={<GrammarLesson/>}/>
+                                <Route element={<TodayPage/>} index/>
+                                <Route element={<GrammarLibraryPage/>} path="/grammar"/>
+                                <Route element={<LessonPage/>} path="/grammar/:lessonId"/>
+                                <Route element={<WordsPage/>} path="/words"/>
+                                <Route element={<AskPage/>} path="/ask"/>
+                                <Route element={<Navigate replace to="/ask"/>} path="/ask-llama"/>
+                                <Route element={<AdminPage/>} path="/admin/courses"/>
+                                <Route element={<Navigate replace to="/"/>} path="*"/>
                             </Routes>
-                        </SidebarInset>
-                    </SidebarProvider>
-                </BreadcrumbProvider>
-            </QueryClientProvider>
-        </>
-    )
+                        </AppShell>
+                    </CommandMenuProvider>
+                </TooltipProvider>
+            </SocketProvider>
+        </QueryClientProvider>
+    );
 }
 
-export default App
+export default App;

@@ -1,5 +1,5 @@
 import axios, {AxiosError} from "axios";
-import {GrammarLessonsProps} from "@/grammar/GrammarItemProps.ts";
+import {GrammarItemProps, GrammarLessonsProps} from "@/grammar/GrammarItemProps.ts";
 import {useQuery} from "react-query";
 import {GrammarLessonLevel} from "@/grammar/GrammarLessonLevel.ts";
 
@@ -25,9 +25,39 @@ export function useGrammarLessons(grammarLessonLevel: GrammarLessonLevel): Gramm
         data,
         isError,
         error
-    } = useQuery(["grammar-lessons", grammarLessonLevel.valueOf()], () => grammarService.getGrammarLessons(grammarLessonLevel));
+    } = useQuery(["grammar-lessons", grammarLessonLevel.valueOf()], () => grammarService.getGrammarLessons(grammarLessonLevel), {
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    });
     if (isError) {
         throw error;
     }
     return data;
+}
+
+export interface LevelInfo {
+    level: GrammarLessonLevel;
+    label: string;
+    shortLabel: string;
+}
+
+export const LEVELS: LevelInfo[] = [
+    {level: GrammarLessonLevel.B2, label: "Grammar B2", shortLabel: "B2"},
+    {level: GrammarLessonLevel.C1, label: "Grammar C1", shortLabel: "C1"},
+    {level: GrammarLessonLevel.ADVANCED_GRAMMAR_CHALLENGE, label: "Advanced grammar", shortLabel: "Advanced"},
+];
+
+export interface LessonWithLevel extends GrammarItemProps {
+    level: LevelInfo;
+}
+
+/** Every lesson across all levels, each tagged with its level. */
+export function useAllLessons() {
+    const b2 = useGrammarLessons(GrammarLessonLevel.B2);
+    const c1 = useGrammarLessons(GrammarLessonLevel.C1);
+    const advanced = useGrammarLessons(GrammarLessonLevel.ADVANCED_GRAMMAR_CHALLENGE);
+    const byLevel = [b2, c1, advanced];
+    const lessons: LessonWithLevel[] = LEVELS.flatMap((level, index) =>
+        (byLevel[index]?.lessons ?? []).map(lesson => ({...lesson, level})));
+    return {lessons, isLoading: byLevel.some(entry => entry === undefined)};
 }
