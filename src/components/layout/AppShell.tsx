@@ -37,9 +37,9 @@ export function AppShell({children}: { children: ReactNode }) {
 
     return (
         // Home-screen mode uses a translucent status bar, so content must clear the notch and side insets itself.
-        // iOS home-screen mode reports a viewport (100dvh, innerHeight, fixed inset-0) shorter than the screen by the
-        // top inset while drawing from the very top, leaving a gap under the tab bar. 100lvh is the full screen there.
-        <div className="fixed inset-x-0 top-0 flex h-dvh [.ios-standalone_&]:h-lvh [@media(display-mode:standalone)]:h-lvh overflow-hidden bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[env(safe-area-inset-top)] text-foreground">
+        // Anchored to the top with an explicit height, not inset-0: on iOS 26 home-screen apps the fixed-position
+        // viewport ends short of the screen bottom. See --app-height in index.css.
+        <div className="fixed inset-x-0 top-0 flex h-[var(--app-height)] overflow-hidden bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[env(safe-area-inset-top)] text-foreground">
             <nav aria-label="Main" className="hidden w-[68px] shrink-0 flex-col items-center gap-1.5 border-r py-3 md:flex">
                 <Link
                     aria-label="English Daily home"

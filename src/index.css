@@ -11,6 +11,18 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+
+    /*
+     * Height of the visible screen for the app shell. 100dvh is normally right, but iOS 26 home-screen apps
+     * (black-translucent status bar + viewport-fit=cover) draw from the top of the screen while sizing the viewport
+     * one top inset short (WebKit bug 301108), which leaves a gap under the tab bar. Adding the top inset back and
+     * capping at 100lvh gives the real screen height there and resolves to 100dvh everywhere else (top inset 0),
+     * including once WebKit fixes the bug.
+     */
+    :root {
+        --app-height: 100dvh;
+        --app-height: min(100lvh, calc(100dvh + env(safe-area-inset-top)));
+    }
 }
 
 @layer base {
