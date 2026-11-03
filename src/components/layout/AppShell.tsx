@@ -36,7 +36,8 @@ export function AppShell({children}: { children: ReactNode }) {
     const {open: openCommandMenu} = useCommandMenu();
 
     return (
-        <div className="flex h-dvh w-full overflow-hidden bg-background text-foreground">
+        // Home-screen mode uses a translucent status bar, so content must clear the notch and side insets itself.
+        <div className="flex h-dvh w-full overflow-hidden bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[env(safe-area-inset-top)] text-foreground">
             <nav aria-label="Main" className="hidden w-[68px] shrink-0 flex-col items-center gap-1.5 border-r py-3 md:flex">
                 <Link
                     aria-label="English Daily home"
