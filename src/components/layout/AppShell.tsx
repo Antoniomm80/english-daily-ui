@@ -5,6 +5,7 @@ import {cn} from "@/lib/utils";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {isNavItemActive, NAV_ITEMS} from "@/components/layout/nav-items.ts";
 import {useCommandMenu} from "@/components/layout/CommandMenu.tsx";
+import {ViewportDebug} from "@/components/layout/ViewportDebug.tsx";
 
 function RailLink({to, label, active, children}: { to: string; label: string; active: boolean; children: ReactNode }) {
     return (
@@ -38,7 +39,7 @@ export function AppShell({children}: { children: ReactNode }) {
     return (
         // Home-screen mode uses a translucent status bar, so content must clear the notch and side insets itself.
         // fixed inset-0 rather than h-dvh: in iOS standalone mode 100dvh excludes the status bar, leaving a gap under the tab bar.
-        <div className="fixed inset-0 flex overflow-hidden bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[env(safe-area-inset-top)] text-foreground">
+        <div data-debug="shell" className="fixed inset-0 flex overflow-hidden bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pt-[env(safe-area-inset-top)] text-foreground">
             <nav aria-label="Main" className="hidden w-[68px] shrink-0 flex-col items-center gap-1.5 border-r py-3 md:flex">
                 <Link
                     aria-label="English Daily home"
@@ -74,7 +75,7 @@ export function AppShell({children}: { children: ReactNode }) {
             <div className="flex min-w-0 flex-1 flex-col">
                 <main className="flex min-h-0 flex-1 flex-col">{children}</main>
 
-                <nav aria-label="Main" className="grid shrink-0 grid-cols-4 border-t bg-background px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-1 md:hidden">
+                <nav aria-label="Main" data-debug="tabbar" className="grid shrink-0 grid-cols-4 border-t bg-background px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-1 md:hidden">
                     {NAV_ITEMS.map(item => {
                         const active = isNavItemActive(item, pathname);
                         return (
@@ -94,6 +95,7 @@ export function AppShell({children}: { children: ReactNode }) {
                     })}
                 </nav>
             </div>
+            <ViewportDebug/>
         </div>
     );
 }
